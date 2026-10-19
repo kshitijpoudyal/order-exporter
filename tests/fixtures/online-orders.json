@@ -1,0 +1,56 @@
+{
+  "data": {
+    "orderHistory": {
+      "pageInfo": { "nextPageCursor": "abc" },
+      "orderGroups": [
+        {
+          "orderId": "2000123456789",
+          "orderDate": "2026-09-14T15:32:10.000Z",
+          "type": "DELIVERY",
+          "status": "Delivered",
+          "orderDetailsUrl": "/orders/2000123456789",
+          "priceDetails": {
+            "subTotal": { "value": 152.38, "displayValue": "$152.38", "currencyUnit": "USD" },
+            "deliveryFee": { "value": 0 },
+            "savings": { "value": -12.0, "displayValue": "-$12.00" },
+            "taxTotal": { "value": 9.14, "displayValue": "$9.14" },
+            "grandTotal": { "value": 161.52, "displayValue": "$161.52", "currencyUnit": "USD" }
+          },
+          "paymentMethods": [{ "displayName": "Sam's Club Mastercard", "lastFour": "4421" }],
+          "items": [
+            {
+              "orderId": "2000123456789",
+              "productInfo": { "name": "Member's Mark Paper Towels, 15 ct.", "usItemId": "980012345", "category": "Household" },
+              "quantity": 2,
+              "priceInfo": { "unitPrice": { "value": 22.98 }, "linePrice": { "value": 45.96 } },
+              "imageInfo": { "thumbnailUrl": "https://scene7.samsclub.com/is/image/samsclub/0078742_A" },
+              "canonicalUrl": "/p/members-mark-paper-towels/prod123"
+            },
+            {
+              "productInfo": { "name": "Kirkland-free Organic Eggs, 24 ct.", "usItemId": "990054321" },
+              "quantity": 1,
+              "priceInfo": { "unitPrice": { "value": 8.48 }, "linePrice": { "value": 8.48 } }
+            },
+            {
+              "productInfo": { "name": "=HYPERLINK(\"evil\") Coffee Pods, 100 ct.", "usItemId": "970011111" },
+              "quantity": 1,
+              "priceInfo": { "linePrice": { "value": 97.94 } }
+            }
+          ]
+        },
+        {
+          "orderId": "2000987654321",
+          "orderDate": "2025-12-03T10:00:00.000Z",
+          "type": "PICKUP",
+          "status": "Picked up",
+          "priceDetails": {
+            "subTotal": { "value": 40.0 },
+            "taxTotal": { "value": 3.3 },
+            "grandTotal": { "value": 43.3 }
+          },
+          "itemCount": 3
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Order History Exporter</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <img src="../icons/icon48.png" alt="" width="28" height="28" />
+    <div class="grow">
+      <h1>Order History Exporter</h1>
+      <p class="sub">Orders &amp; items → Excel / CSV</p>
+    </div>
+    <button id="openRetailers" class="ghost small" title="All retailers">Retailers</button>
+  </header>
+
+  <section class="card">
+    <div class="row between">
+      <span class="label">Retailer</span>
+      <span id="autoBadge" class="badge hidden">Detected from this tab</span>
+    </div>
+    <div id="retailerPicker" class="picker" role="radiogroup" aria-label="Retailer"></div>
+  </section>
+
+  <section id="connection" class="card">
+    <div class="row"><span id="dot" class="dot"></span><span id="connText">Checking tab…</span></div>
+    <button id="openOrders" class="ghost wide hidden">Open order history</button>
+  </section>
+
+  <section class="card">
+    <label class="field">
+      <span>Date range</span>
+      <select id="range">
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+        <option value="ytd" selected>This year</option>
+        <option value="lastyear">Last year</option>
+        <option value="all">All available history</option>
+        <option value="custom">Custom…</option>
+      </select>
+    </label>
+    <div id="custom" class="grid2 hidden">
+      <label class="field"><span>From</span><input type="date" id="from" /></label>
+      <label class="field"><span>To</span><input type="date" id="to" /></label>
+    </div>
+    <label class="check"><input type="checkbox" id="details" checked /> Include item, tax &amp; payment details <em>(slower)</em></label>
+    <div class="row gap">
+      <button id="scan" class="primary">Scan orders</button>
+      <button id="stop" class="ghost hidden">Stop</button>
+    </div>
+    <p id="progress" class="progress"></p>
+  </section>
+
+  <section class="card">
+    <div class="stats">
+      <div><b id="sOrders">0</b><span>orders</span></div>
+      <div><b id="sItems">0</b><span>items</span></div>
+      <div><b id="sTotal">$0</b><span>total</span></div>
+      <div><b id="sTax">$0</b><span>tax</span></div>
+    </div>
+    <p id="sRange" class="muted"></p>
+    <p id="sWarn" class="warn hidden"></p>
+    <div class="row gap">
+      <button id="xlsx" class="primary">Excel (.xlsx)</button>
+      <button id="csv" class="secondary">CSV (2 files)</button>
+    </div>
+    <div class="row links">
+      <button id="clear" class="link">Clear saved orders</button>
+      <button id="debug" class="link">Copy debug report</button>
+    </div>
+    <p id="debugMsg" class="muted hidden"></p>
+  </section>
+
+  <footer>Your order data stays in this browser. Nothing is sent anywhere.</footer>
+
+  <script src="../src/retailers.js"></script>
+  <script src="../vendor/xlsx.full.min.js"></script>
+  <script src="../src/lib/export.js"></script>
+  <script src="../src/lib/ui-shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

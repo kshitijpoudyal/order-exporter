@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Retailers — Order History Exporter</title>
+  <link rel="stylesheet" href="retailers.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <img src="../icons/icon48.png" alt="" width="32" height="32" />
+      <div class="grow">
+        <h1>Retailers</h1>
+        <p class="sub">Export your order history from each store you shop at. Everything stays in this browser.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="toolbar">
+      <div class="totals" id="totals" aria-live="polite"></div>
+      <div class="tools">
+        <label class="field inline">
+          <span>Date range</span>
+          <select id="range">
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="ytd">This year</option>
+            <option value="lastyear">Last year</option>
+            <option value="all" selected>All saved history</option>
+          </select>
+        </label>
+        <button id="exportAll" class="primary">Export all retailers (Excel)</button>
+      </div>
+    </section>
+
+    <h2 class="section-title">Supported</h2>
+    <div class="grid" id="supported"></div>
+
+    <h2 class="section-title">Coming soon</h2>
+    <div class="grid soon" id="soon"></div>
+
+    <section class="how">
+      <h2>How scanning works</h2>
+      <ol>
+        <li><b>Open</b> the store's order history and sign in as you normally would. The extension never sees your password.</li>
+        <li><b>Click the extension icon.</b> It picks the store you're on automatically.</li>
+        <li><b>Scan.</b> It pages through your orders and opens each one in the background to collect items, prices, tax and payment.</li>
+        <li><b>Export</b> from the popup or from this page — one store, or all of them in a single workbook.</li>
+      </ol>
+    </section>
+  </main>
+
+  <template id="card-tpl">
+    <article class="rcard">
+      <div class="rhead">
+        <span class="mono-slot"></span>
+        <div class="grow">
+          <h3 class="rname"></h3>
+          <p class="rtypes"></p>
+        </div>
+        <span class="pill ok">Supported</span>
+      </div>
+      <dl class="rstats">
+        <div><dt>Orders</dt><dd class="v-orders">0</dd></div>
+        <div><dt>Items</dt><dd class="v-items">0</dd></div>
+        <div><dt>Spent</dt><dd class="v-total">$0</dd></div>
+        <div><dt>Tax</dt><dd class="v-tax">$0</dd></div>
+      </dl>
+      <p class="rmeta"></p>
+      <p class="rwarn hidden"></p>
+      <div class="ractions">
+        <button class="primary a-open">Open order history</button>
+        <button class="secondary a-xlsx">Excel</button>
+        <button class="secondary a-csv">CSV</button>
+      </div>
+      <button class="link a-clear">Clear saved orders</button>
+    </article>
+  </template>
+
+  <script src="../src/retailers.js"></script>
+  <script src="../vendor/xlsx.full.min.js"></script>
+  <script src="../src/lib/export.js"></script>
+  <script src="../src/lib/ui-shared.js"></script>
+  <script src="retailers.js"></script>
+</body>
+</html>

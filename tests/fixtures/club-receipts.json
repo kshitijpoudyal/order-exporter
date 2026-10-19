@@ -1,0 +1,18 @@
+{
+  "payload": {
+    "receipts": [
+      {
+        "tcNumber": "1234567890123456",
+        "transactionDate": "09/02/2026",
+        "clubName": "Shreveport Club #6431",
+        "totals": { "subtotal": "$100.00", "tax": "$8.50", "total": "$108.50" },
+        "tenders": [{ "tenderType": "VISA", "last4": "1234" }],
+        "items": [
+          { "itemDescription": "MM Rotisserie Chicken", "itemNumber": "980000001", "quantity": 2, "price": "$4.98", "amount": "$9.96" },
+          { "itemDescription": "Bananas 3 lb", "itemNumber": "980000002", "quantity": 1, "price": "$1.48" },
+          { "itemDescription": "Instant Savings", "itemNumber": "", "quantity": 1, "amount": "($2.00)" }
+        ]
+      }
+    ]
+  }
+}

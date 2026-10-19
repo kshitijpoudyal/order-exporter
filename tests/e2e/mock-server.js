@@ -46,6 +46,7 @@ fetch('/orchestra/api/order-details?orderId=${id}').then(r => r.json()).then(j =
 const glass = require('./glass-mock.js');
 const walmart = require('./walmart-mock.js');
 const costco = require('./costco-mock.js');
+const amazon = require('./amazon-mock.js');
 
 const server = https.createServer({ key: fs.readFileSync(path.join(__dirname, 'key.pem')), cert: fs.readFileSync(path.join(__dirname, 'cert.pem')) }, (req, res) => {
   let body = '';
@@ -59,6 +60,10 @@ function route(req, res, body) {
     res.writeHead(code, { 'content-type': type });
     res.end(b);
   };
+  if (/amazon\.com/.test(req.headers.host || '')) {
+    if (!amazon.handle(u, req, body, send)) send(404, 'text/plain', 'not found');
+    return;
+  }
   if (/costco\.com/.test(req.headers.host || '')) {
     if (!costco.handle(u, req, body, send)) send(404, 'text/plain', 'not found');
     return;

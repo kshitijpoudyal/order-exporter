@@ -15,6 +15,17 @@
     <button id="openRetailers" class="ghost small" title="All retailers">Retailers</button>
   </header>
 
+  <section id="consentCard" class="card consent hidden">
+    <h2>Before the first scan</h2>
+    <p>This extension reads your order history on Amazon, Walmart, Costco and Sam's Club when you scan, and keeps it
+      <b>only in this browser</b>. Nothing is sent anywhere. It never sees your password.</p>
+    <div class="row gap">
+      <button id="agree" class="primary">I agree</button>
+      <button id="consentDetails" class="ghost">Details</button>
+    </div>
+  </section>
+
+  <div id="main">
   <section class="card">
     <div class="row between">
       <span class="label">Retailer</span>
@@ -72,7 +83,9 @@
     <p id="debugMsg" class="muted hidden"></p>
   </section>
 
-  <footer>Your order data stays in this browser. Nothing is sent anywhere.</footer>
+  </div>
+
+  <footer>Your order data stays in this browser. Nothing is sent anywhere. <a href="../pages/privacy.html" target="_blank">Privacy</a></footer>
 
   <script src="../src/retailers.js"></script>
   <script src="../vendor/xlsx.full.min.js"></script>

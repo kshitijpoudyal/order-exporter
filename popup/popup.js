@@ -166,9 +166,23 @@
     if (retailer && changes[R.keys(retailer.id).orders]) refreshStats();
   });
 
+  $('agree').addEventListener('click', async () => {
+    await U.giveConsent();
+    location.reload();
+  });
+  $('consentDetails').addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('pages/welcome.html') });
+    window.close();
+  });
+
   // Pick the retailer: ?retailer= (from the Retailers page) → active tab's site → last used → first.
   (async () => {
     await U.ready();
+    if (!(await U.hasConsent())) {
+      $('consentCard').classList.remove('hidden');
+      $('main').classList.add('hidden');
+      return;
+    }
     const params = new URLSearchParams(location.search);
     const [active] = await chrome.tabs.query({ active: true, currentWindow: true });
     tab = active || null;

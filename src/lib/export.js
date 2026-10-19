@@ -44,6 +44,7 @@
     ['Item Total', 'itemTotal'],
     ['Item Savings', 'savings'],
     ['Category', 'category'],
+    ['Sold By', 'seller'],
     ['Status', 'status'],
     ['Product URL', 'productUrl'],
     ['Image URL', 'imageUrl'],

@@ -16,9 +16,13 @@
   let bodyRe = /order/i;
   let maxChars = 8_000_000;
 
+  let forwardBodies = true;
+  let configured = false;
   window.addEventListener('message', (e) => {
-    if (e.source !== window || !e.data || e.data.__scx !== 'config') return;
+    if (e.source !== window || !e.data || e.data.__scx !== 'config' || configured) return;
+    configured = true; // first config wins (it comes from our content script at document_start)
     try {
+      forwardBodies = e.data.forwardBodies !== false;
       urlRes = e.data.urlPatterns.map((p) => new RegExp(p.source, p.flags));
       bodyRe = new RegExp(e.data.bodyPattern.source, e.data.bodyPattern.flags);
       maxChars = e.data.maxBodyChars || maxChars;
@@ -39,7 +43,7 @@
     if (!text) return;
     const t = text.trimStart()[0];
     if (t !== '{' && t !== '[') return;
-    if (text.length > maxChars || !bodyRe.test(text)) {
+    if (!forwardBodies || text.length > maxChars || !bodyRe.test(text)) {
       // tell the content script it existed (for the debug report), without the body
       window.postMessage({ __scx: 'captureSkipped', url: String(url), size: text.length }, location.origin);
       return;

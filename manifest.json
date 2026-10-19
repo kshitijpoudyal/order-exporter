@@ -2,17 +2,16 @@
   "manifest_version": 3,
   "name": "Order History Exporter",
   "short_name": "Order Exporter",
-  "version": "0.6.0",
-  "description": "Export your Sam's Club, Walmart and Costco order history (orders and purchased items) to Excel or CSV. Runs entirely in your browser.",
+  "version": "1.1.0",
+  "description": "Export your own order history from Amazon, Walmart, Costco and Sam's Club to Excel or CSV. Data stays in your browser.",
   "permissions": [
-    "storage",
-    "downloads",
-    "clipboardWrite"
+    "storage"
   ],
   "host_permissions": [
     "https://www.samsclub.com/*",
     "https://www.walmart.com/*",
-    "https://www.costco.com/*"
+    "https://www.costco.com/*",
+    "https://www.amazon.com/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",
@@ -35,7 +34,8 @@
       "matches": [
         "https://www.samsclub.com/*",
         "https://www.walmart.com/*",
-        "https://www.costco.com/*"
+        "https://www.costco.com/*",
+        "https://www.amazon.com/*"
       ],
       "js": [
         "src/inject.js"
@@ -48,7 +48,8 @@
       "matches": [
         "https://www.samsclub.com/*",
         "https://www.walmart.com/*",
-        "https://www.costco.com/*"
+        "https://www.costco.com/*",
+        "https://www.amazon.com/*"
       ],
       "js": [
         "src/retailers.js",
@@ -62,5 +63,9 @@
   "options_ui": {
     "page": "pages/retailers.html",
     "open_in_tab": true
+  },
+  "minimum_chrome_version": "111",
+  "background": {
+    "service_worker": "src/background.js"
   }
 }

@@ -45,19 +45,28 @@
   const SUPPORTED = [
     {
       ...BASE,
-      ...GLASS,
-      id: 'samsclub',
-      name: "Sam's Club",
-      short: 'SC',
-      color: '#0067a0',
-      hosts: /(^|\.)samsclub\.com$/i,
-      homeUrl: 'https://www.samsclub.com',
-      orderHistoryUrls: ['https://www.samsclub.com/en/orders', 'https://www.samsclub.com/orders'],
-      captureUrlPatterns: [/samsclub\.com\//i],
-      // Detail URLs are learned by clicking one "See details" button (they carry extra
-      // query parameters that differ per account), with this as a last resort.
-      orderDetailUrlTemplate: 'https://www.samsclub.com/orders/{orderId}',
-      orderTypes: 'Online, pickup, delivery, in-club, Scan & Go and fuel',
+      id: 'amazon',
+      name: 'Amazon',
+      short: 'A',
+      color: '#232f3e',
+      hosts: /^www\.amazon\.com$/i,
+      homeUrl: 'https://www.amazon.com',
+      orderHistoryUrls: ['https://www.amazon.com/your-orders/orders', 'https://www.amazon.com/gp/your-account/order-history'],
+      captureUrlPatterns: [/amazon\.com\//i],
+      // Amazon's order pages are server-rendered: the scan fetches them directly (same site,
+      // your session) instead of clicking through the tab. Background JSON isn't used.
+      captureJson: false,
+      scanStrategy: 'amazon',
+      // First page of a year; later pages follow the page's own "Next →" link.
+      listUrl: (year) => `https://www.amazon.com/your-orders/orders?timeFilter=year-${year}`,
+      detailsUrl: (id) => `https://www.amazon.com/your-orders/order-details?orderID=${encodeURIComponent(id)}`,
+      invoiceUrl: (id) => `https://www.amazon.com/gp/css/summary/print.html?orderID=${encodeURIComponent(id)}`,
+      // Order numbers: 112-1234567-1234567 (physical) or D01-1234567-1234567 (digital).
+      orderIdPattern: /\b((?:\d{3}|D\d{2})-\d{7}-\d{7})\b/,
+      // ASIN in product links: /dp/B0ABCDEFGH, /gp/product/B0ABCDEFGH
+      asinFromUrl: /\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/,
+      pageSize: 10,
+      orderTypes: 'Online orders (physical and digital), with invoices',
     },
     {
       ...BASE,
@@ -108,12 +117,27 @@
       orderDetailUrlTemplate: 'https://www.costco.com/OrderStatusDetailsView?orderId={orderId}',
       orderTypes: 'In-warehouse and gas station receipts; online orders (early support)',
     },
+    {
+      ...BASE,
+      ...GLASS,
+      id: 'samsclub',
+      name: "Sam's Club",
+      short: 'SC',
+      color: '#0067a0',
+      hosts: /(^|\.)samsclub\.com$/i,
+      homeUrl: 'https://www.samsclub.com',
+      orderHistoryUrls: ['https://www.samsclub.com/en/orders', 'https://www.samsclub.com/orders'],
+      captureUrlPatterns: [/samsclub\.com\//i],
+      // Detail URLs are learned by clicking one "See details" button (they carry extra
+      // query parameters that differ per account), with this as a last resort.
+      orderDetailUrlTemplate: 'https://www.samsclub.com/orders/{orderId}',
+      orderTypes: 'Online, pickup, delivery, in-club, Scan & Go and fuel',
+    },
   ];
 
   // Shown on the Retailers page so it's clear what's next. Not active yet.
   const COMING_SOON = [
     { id: 'target', name: 'Target', short: 'T', color: '#cc0000' },
-    { id: 'amazon', name: 'Amazon', short: 'A', color: '#232f3e' },
     { id: 'bjs', name: "BJ's Wholesale", short: 'BJ', color: '#d6001c' },
     { id: 'kroger', name: 'Kroger', short: 'K', color: '#21409a' },
     { id: 'homedepot', name: 'The Home Depot', short: 'HD', color: '#f96302' },

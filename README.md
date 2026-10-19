@@ -23,6 +23,12 @@ More stores are planned (see the Retailers page). Adding one is mostly configura
    fees, payment card and store.
 4. Click **Excel** (one workbook, two sheets) or **CSV** (two files).
 
+**Amazon:** open *Returns & Orders*. The scan reads your order list one year at a time
+(following "Next →"), then each order's details page (items with ASIN, quantity, price,
+seller, image; subtotal, shipping, tax, total) and its invoice (payment card). These pages
+are loaded in the background with your session, so your tab stays put. Shipping names
+and addresses are not saved.
+
 **Costco:** open *Account → Orders & Purchases*. The scan opens the In-Warehouse tab, steps
 through the "Showing" 3-month periods that overlap your date range, and opens each
 receipt to read its lines (item #, name, quantity, unit price, instant savings), subtotal,
@@ -55,7 +61,7 @@ Money columns are real numbers (currency-formatted in Excel). Text that starts w
 |---|---|
 | `src/retailers.js` | Retailer registry: hosts, order-history URLs, page selectors, detail-URL rules, storage keys, coming-soon list |
 | `src/inject.js` | Runs in the page; copies JSON responses the site already loads for your orders |
-| `src/content.js` | Reads order cards on the list page (Sam's Club and Walmart share Walmart's "Glass" platform), pages through "Next page"/"Load more", then reads each order's details page — item tiles (name, qty/weight, prices, item number) and the summary (date, subtotal, fees, tax, total, card, store) — in a hidden frame. Costco has its own flow (tabs, "Showing" periods, receipt popups) |
+| `src/content.js` | Reads order cards on the list page (Sam's Club and Walmart share Walmart's "Glass" platform), pages through "Next page"/"Load more", then reads each order's details page — item tiles (name, qty/weight, prices, item number) and the summary (date, subtotal, fees, tax, total, card, store) — in a hidden frame. Costco has its own flow (tabs, "Showing" periods, receipt popups); Amazon's pages are server-rendered and fetched directly (year filter, paging, details + invoice) |
 | `src/lib/normalize.js` | Finds order-shaped objects in any JSON, parses money/dates (incl. yearless "Tue, Dec 2"), merges data from several sources |
 | `src/lib/export.js` | Builds the Order Data and Product Data reports; CSV and XLSX (SheetJS, vendored) |
 | `src/lib/ui-shared.js` | Per-retailer storage, ranges and exports shared by popup and Retailers page |
@@ -76,7 +82,7 @@ To work out a new site's page structure and data requests, see **[REA_RECON.md](
 
 ```bash
 node --test tests/*.test.js     # normalizer + exporters against fixture payloads
-node tests/e2e/run.js           # real Chromium + extension against mock samsclub.com, walmart.com and costco.com
+node tests/e2e/run.js           # real Chromium + extension against mock amazon.com, walmart.com, costco.com and samsclub.com
 ```
 
 The e2e test needs Playwright's Chromium and generates its own self-signed cert for the
@@ -84,10 +90,16 @@ mock hosts.
 
 ## Notes
 
-- Only requests `storage`, `downloads` and `clipboardWrite` (debug report), and only runs on
-  `https://www.samsclub.com/*`, `https://www.walmart.com/*` and `https://www.costco.com/*`.
+- Asks for consent on install before reading anything. Only requests `storage`, and only runs on
+  `https://www.amazon.com/*`, `https://www.walmart.com/*`, `https://www.costco.com/*` and `https://www.samsclub.com/*`.
 - Online Walmart orders show only delivery status in the list; their order date comes from
   the details page, so keep *Include details* on.
 - Detail backfill is throttled (`detailFetchDelayMs`, default 1.2 s/order) to stay gentle on the site.
 - Independent project; not affiliated with Sam's Club, Walmart or any other retailer.
 - SheetJS Community Edition is Apache-2.0 (`vendor/xlsx.LICENSE`).
+
+## Publishing
+
+See `store/PUBLISHING.md` (step-by-step), `store/STORE_LISTING.md` (dashboard answers),
+`store/privacy-policy.html` (host it publicly) and `store/SAFETY_REVIEW.md`.
+Build the upload zip with `bash scripts/build-store.sh`.

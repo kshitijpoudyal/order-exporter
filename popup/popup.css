@@ -97,3 +97,7 @@ footer { color: var(--muted); font-size: 11px; text-align: center; padding: 2px 
   display: inline-grid; place-items: center; flex: none; border-radius: 50%;
   background: var(--mono); color: #fff; font-weight: 800; letter-spacing: -0.02em; line-height: 1;
 }
+
+.consent h2 { font-size: 14px; margin: 0 0 6px; }
+.consent p { margin: 0; font-size: 12.5px; }
+footer a { color: inherit; }

@@ -5,10 +5,10 @@
 const RECEIPTS = [
   {
     id: '21136600300319120051005', period: 0, type: 'Gas Station', date: '10/05/2026', time: '02:59pm', wh: 'Ridgeland',
-    lines: [['qty', '12.345 GAL @ 2.429'], ['', '1', 'REGULAR', '29.98 N']], sub: 29.98, tax: 0, total: 29.98, tender: 'COSTCO VISA', last4: '3796', count: 1,
+    lines: [['qty', '12.345 GAL @ 2.429'], ['', '1', 'REGULAR', '29.98 N']], sub: 29.98, tax: 0, total: 29.98, tender: 'COSTCO VISA', last4: '4242', count: 1,
   },
   {
-    id: '21136600300319120051006', period: 0, type: 'In-Warehouse', date: '10/05/2026', time: '02:47pm', wh: 'RIDGELAND',
+    id: '21136600300319120050005', period: 0, type: 'In-Warehouse', date: '10/05/2026', time: '02:47pm', wh: 'RIDGELAND',
     lines: [
       ['E', '647465', 'AVOCADOS', '5.29 2'],
       ['E', '30669', 'BANANAS', '1.49 2'],
@@ -18,16 +18,16 @@ const RECEIPTS = [
       ['E', '1218891', 'COCONUT WATR', '21.49 2'],
       ['', '390140', '/1218891', '5.80-'],
     ],
-    sub: 125.44, tax: 1.97, total: 127.41, tender: 'COSTCO VISA', last4: '3796', count: 6, savings: 5.8,
+    sub: 125.44, tax: 1.97, total: 127.41, tender: 'COSTCO VISA', last4: '4242', count: 6, savings: 5.8,
   },
   {
     id: '21136600300319120051007', period: 0, type: 'In-Warehouse', date: '08/19/2026', time: '10:41am', wh: 'SOUTHLAKE',
     lines: [['E', '12345', 'KS WATER 40PK', '4.99 2'], ['', '67890', 'PAPER TOWEL', '24.99 Y']], sub: 29.98, tax: 2.4, total: 32.38, tender: 'DEBIT', last4: '1111', count: 2,
   },
-  { id: '21136600300319120051008', period: 1, type: 'In-Warehouse', date: '06/02/2026', time: '11:00am', wh: 'RIDGELAND', lines: [['E', '11111', 'ROTISSERIE CHKN', '4.99 2']], sub: 4.99, tax: 0, total: 4.99, tender: 'COSTCO VISA', last4: '3796', count: 1 },
-  { id: '21136600300319120051009', period: 2, type: 'In-Warehouse', date: '03/03/2026', time: '09:15am', wh: 'RIDGELAND', lines: [['', '22222', 'TV 65IN', '499.99 Y']], sub: 499.99, tax: 40.0, total: 539.99, tender: 'COSTCO VISA', last4: '3796', count: 1 },
-  { id: '21136600300319120051010', period: 3, type: 'In-Warehouse', date: '12/20/2025', time: '05:30pm', wh: 'RIDGELAND', lines: [['E', '33333', 'HAM', '30.00 2']], sub: 30, tax: 0, total: 30, tender: 'COSTCO VISA', last4: '3796', count: 1 },
-  { id: '21136600300319120051011', period: 4, type: 'In-Warehouse', date: '09/01/2025', time: '05:30pm', wh: 'RIDGELAND', lines: [['E', '44444', 'MILK', '3.00 2']], sub: 3, tax: 0, total: 3, tender: 'COSTCO VISA', last4: '3796', count: 1 },
+  { id: '21136600300319120051008', period: 1, type: 'In-Warehouse', date: '06/02/2026', time: '11:00am', wh: 'RIDGELAND', lines: [['E', '11111', 'ROTISSERIE CHKN', '4.99 2']], sub: 4.99, tax: 0, total: 4.99, tender: 'COSTCO VISA', last4: '4242', count: 1 },
+  { id: '21136600300319120051009', period: 2, type: 'In-Warehouse', date: '03/03/2026', time: '09:15am', wh: 'RIDGELAND', lines: [['', '22222', 'TV 65IN', '499.99 Y']], sub: 499.99, tax: 40.0, total: 539.99, tender: 'COSTCO VISA', last4: '4242', count: 1 },
+  { id: '21136600300319120051010', period: 3, type: 'In-Warehouse', date: '12/20/2025', time: '05:30pm', wh: 'RIDGELAND', lines: [['E', '33333', 'HAM', '30.00 2']], sub: 30, tax: 0, total: 30, tender: 'COSTCO VISA', last4: '4242', count: 1 },
+  { id: '21136600300319120051011', period: 4, type: 'In-Warehouse', date: '09/01/2025', time: '05:30pm', wh: 'RIDGELAND', lines: [['E', '44444', 'MILK', '3.00 2']], sub: 3, tax: 0, total: 3, tender: 'COSTCO VISA', last4: '4242', count: 1 },
 ];
 const PERIODS = ['Last 3 Months', '2026 May - July', '2026 February - April', '2026 November - January', '2025 August - October', '2025 May - July'];
 

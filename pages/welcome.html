@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome — Order History Exporter</title>
+  <link rel="stylesheet" href="retailers.css" />
+  <link rel="stylesheet" href="welcome.css" />
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <img src="../icons/icon48.png" alt="" width="32" height="32" />
+      <div class="grow">
+        <h1>Order History Exporter</h1>
+        <p class="sub">Export your own order history from Amazon, Walmart, Costco and Sam's Club to Excel or CSV.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap narrow">
+    <section class="how">
+      <h2>Before you start: what this extension reads and where it goes</h2>
+      <ul class="facts">
+        <li><b>What it reads.</b> When you're signed in on one of the supported stores and run a scan, it reads your
+          purchase history pages: order and receipt numbers, dates, store/warehouse, items (name, item number, quantity,
+          prices, savings, seller), subtotal, fees, tax, total, and the card type with its last four digits as the store
+          shows them. It does not save shipping names or addresses.</li>
+        <li><b>Where it's kept.</b> Only in this browser's extension storage, on this computer.</li>
+        <li><b>Who receives it.</b> Nobody. The extension has no server, no analytics and no tracking, and never sends
+          your data anywhere. Files are created only when you click Export, and saved to your Downloads folder.</li>
+        <li><b>Where it runs.</b> Only on www.amazon.com, www.walmart.com, www.costco.com and www.samsclub.com. It never sees your
+          password; you sign in to the store yourself.</li>
+        <li><b>What it does on the page.</b> During a scan it clicks "Next page", opens order details or receipts, and
+          switches Costco's date periods for you; on Amazon it loads your order list, order details and invoice pages in
+          the background, just as if you opened them. It goes at a slow pace, then stops.</li>
+        <li><b>Your control.</b> Delete saved orders for any store from the popup or the Retailers page, withdraw
+          consent below, or remove the extension to erase everything.</li>
+      </ul>
+      <p class="fine">Not affiliated with, endorsed by, or sponsored by Amazon, Walmart, Costco or Sam's Club. Store names are used
+        only to say which sites the extension works with.</p>
+      <div class="consent-row">
+        <button id="agree" class="primary">I agree — enable the extension</button>
+        <button id="withdraw" class="link hidden">Withdraw consent</button>
+        <span id="state" class="state" aria-live="polite"></span>
+      </div>
+      <p class="fine">Until you agree, the extension does not read or save anything. Full details:
+        <a href="privacy.html">Privacy policy</a>.</p>
+    </section>
+  </main>
+
+  <script src="../src/retailers.js"></script>
+  <script src="../src/lib/export.js"></script>
+  <script src="../src/lib/ui-shared.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>

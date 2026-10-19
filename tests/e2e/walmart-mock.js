@@ -64,7 +64,7 @@ async function renderDetail(id) {
     '<button data-automation-id="items-toggle-link" aria-label="Show items" aria-expanded="false"></button>' +
     '<div data-testid="category-accordion-" id="tiles" style="display:none">' + o.items.map(tile).join('') + '</div></div>' +
     (o.purchase ? '<div>Store location</div><div>Ruston N Service Rd E Supercenter</div><div>1201 N SERVICE RD E, RUSTON, LA 71270</div>' : '') +
-    '<div>Payment method</div><div>Payment method</div><div>Amex ending in 1006</div><div>Amex ending in 1006</div>' +
+    '<div>Payment method</div><div>Payment method</div><div>Amex ending in 0005</div><div>Amex ending in 0005</div>' +
     '<div>Subtotal (' + n + ' items)</div><div>' + money(o.sub) + '</div>' +
     (o.fee !== null ? '<div>Delivery fee</div><div>' + (o.fee ? money(o.fee) : 'Free') + '</div>' : '') +
     '<div>Taxes</div><div>Taxes</div><div>' + money(o.tax) + '</div><div>Total</div><div>' + money(o.total) + '</div>';

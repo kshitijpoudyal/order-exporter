@@ -123,4 +123,5 @@
 
   renderSoon();
   render();
+  U.hasConsent().then((ok) => $('consentBanner').classList.toggle('hidden', ok));
 })();

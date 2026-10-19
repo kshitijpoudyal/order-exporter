@@ -108,3 +108,4 @@ button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); o
   .totals { gap: 14px; }
   .rstats dd { font-size: 15px; }
 }
+.primary-link { color: var(--accent); font-weight: 600; }

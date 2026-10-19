@@ -15,7 +15,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   if (!fs.existsSync(path.join(__dirname, 'key.pem'))) {
     require('node:child_process').execSync(
-      'openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 30 -subj "/CN=www.samsclub.com" -addext "subjectAltName=DNS:www.samsclub.com,DNS:www.walmart.com,DNS:www.costco.com"',
+      'openssl req -x509 -newkey rsa:2048 -nodes -keyout key.pem -out cert.pem -days 30 -subj "/CN=www.samsclub.com" -addext "subjectAltName=DNS:www.samsclub.com,DNS:www.walmart.com,DNS:www.costco.com,DNS:www.amazon.com"',
       { cwd: __dirname, stdio: 'ignore' }
     );
   }
@@ -28,7 +28,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     args: [
       `--disable-extensions-except=${EXT}`,
       `--load-extension=${EXT}`,
-      '--host-resolver-rules=MAP www.samsclub.com:443 127.0.0.1:8443, MAP www.walmart.com:443 127.0.0.1:8443, MAP www.costco.com:443 127.0.0.1:8443',
+      '--host-resolver-rules=MAP www.samsclub.com:443 127.0.0.1:8443, MAP www.walmart.com:443 127.0.0.1:8443, MAP www.costco.com:443 127.0.0.1:8443, MAP www.amazon.com:443 127.0.0.1:8443',
       '--ignore-certificate-errors',
       '--no-proxy-server',
     ],
@@ -43,6 +43,18 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     popup.on('pageerror', (e) => console.log('[popup error]', e.message));
     await popup.goto(`chrome-extension://${extId}/popup/popup.html`);
     const tabId = await popup.evaluate(async () => (await chrome.tabs.query({ url: 'https://www.samsclub.com/*' }))[0].id);
+    // Consent first: before agreeing, the popup shows only the consent card and nothing is saved.
+    await sleep(500);
+    assert.ok(await popup.isVisible('#consentCard'), 'consent card shown before agreeing');
+    assert.ok(!(await popup.isVisible('#main')), 'scan UI hidden before agreeing');
+    const before = await popup.evaluate(async () => (await chrome.storage.local.get('orders:samsclub'))['orders:samsclub']);
+    assert.equal(before, undefined, 'nothing saved before consent (page already loaded orders)');
+    await popup.click('#agree');
+    await sleep(800);
+    assert.ok(await popup.isVisible('#main'), 'scan UI shown after agreeing');
+    await site.reload();
+    await sleep(1500);
+
     // Data saved by v0.4 (single-store keys) must carry over to the per-retailer keys.
     await popup.evaluate(() => chrome.storage.local.set({ orders: { LEGACY12345: { orderId: 'LEGACY12345', orderDate: '2024-01-02', items: [], grandTotal: 5 } } }));
     await popup.goto(`chrome-extension://${extId}/popup/popup.html?tabId=${tabId}`);
@@ -120,6 +132,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     // ---- Scenario 3: Sam's Club "Glass" purchase history (buttons, yearless dates, Next page, SPA) ----
     await popup.evaluate(async (id) => {
       await chrome.storage.local.clear();
+      await chrome.storage.local.set({ 'consent:v1': { at: Date.now() } });
       await new Promise((r) => chrome.tabs.sendMessage(id, { type: 'cleared' }, r));
     }, tabId);
     await site.goto('https://www.samsclub.com/en/orders');
@@ -197,7 +210,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       assert.equal(got.subTotal, W.sub(o), `subtotal ${o.id}`);
       assert.equal(got.tax, o.tax, `tax ${o.id}`);
       if (o.fee !== null) assert.equal(got.shipping, o.fee, `fee ${o.id}`);
-      assert.equal(got.paymentMethods, 'Amex ••1006');
+      assert.equal(got.paymentMethods, 'Amex ••0005');
       if (o.purchase) assert.equal(got.clubName, 'Ruston N Service Rd E Supercenter');
       assert.equal(got.items.length, o.items.length, `items ${o.id}`);
       o.items.forEach((it, k) => {
@@ -247,7 +260,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       assert.equal(got.itemCount, r.count);
       assert.match(got.clubName, new RegExp(r.wh, 'i'));
     }
-    const main = co['21136600300319120051006'];
+    const main = co['21136600300319120050005'];
     assert.deepEqual(main.items.map((i) => [i.itemNumber, i.name, i.quantity, i.unitPrice, i.itemTotal, i.savings]), [
       ['647465', 'AVOCADOS', 1, 5.29, 5.29, null],
       ['30669', 'BANANAS', 1, 1.49, 1.49, null],
@@ -260,13 +273,48 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     assert.deepEqual([gas.name, gas.quantity, gas.unitPrice, gas.itemTotal], ['REGULAR', 12.345, 2.429, 29.98]);
     console.log('costco receipts:', Object.keys(co).length, 'saved;', Object.values(co).filter((o) => o.items.length).length, 'with items');
 
+    // ---- Scenario 6: Amazon — year filter, Next paging, details pages + invoices (fetched) ----
+    await site.goto('https://www.amazon.com/your-orders/orders');
+    await sleep(1500);
+    await popup.goto(`chrome-extension://${extId}/popup/popup.html?tabId=${tabId}`);
+    await sleep(800);
+    assert.equal(await popup.textContent('.chip.on'), 'AAmazon', 'Amazon auto-selected from the tab');
+    await popup.selectOption('#range', 'all');
+    await popup.click('#scan');
+    const deadline6 = Date.now() + 200_000;
+    while (Date.now() < deadline6) {
+      await sleep(1000);
+      st = await popup.evaluate((id) => new Promise((r) => chrome.tabs.sendMessage(id, { type: 'status' }, r)), tabId).catch(() => null);
+      if (st) process.stdout.write(`\r${st.progress}                    `);
+      if (st && !st.scanning && /Done|Error|Stopped/.test(st.progress)) break;
+    }
+    console.log();
+    assert.match(st.progress, /^Done — 14 orders/, '12 orders in 2026 over two pages + 2 in 2025');
+    const A = require('./amazon-mock.js');
+    const ao = await popup.evaluate(async () => (await chrome.storage.local.get('orders:amazon'))['orders:amazon']);
+    assert.equal(Object.keys(ao).length, 14);
+    for (const o of A.ORDERS) {
+      const got = ao[o.id];
+      assert.ok(got, `order ${o.id}`);
+      assert.equal(got.orderDate, N.toDate(o.date));
+      assert.equal(got.subTotal, o.sub, `subtotal ${o.id}`);
+      assert.equal(got.shipping, o.ship);
+      assert.equal(got.tax, o.tax, `tax ${o.id}`);
+      assert.equal(got.grandTotal, o.total, `total ${o.id}`);
+      assert.equal(got.paymentMethods, 'Visa ••4242', 'card from the invoice');
+      assert.deepEqual(got.items.map((i) => [i.name, i.itemNumber, i.quantity, i.unitPrice, i.itemTotal, i.seller]),
+        o.items.map((i) => [i.name, i.asin, i.qty, i.price, Math.round(i.price * i.qty * 100) / 100, 'Test Seller']));
+    }
+    assert.ok(!/Test User|1 Main St/.test(JSON.stringify(ao)), 'ship-to name/address not stored');
+    console.log('amazon orders:', Object.keys(ao).length, 'all with priced items and card');
+
     const page = await ctx.newPage();
     page.on('pageerror', (e) => console.log('[retailers error]', e.message));
     await page.setViewportSize({ width: 1100, height: 900 });
     await page.goto(`chrome-extension://${extId}/pages/retailers.html`);
     await sleep(1200);
     const counts = await page.$$eval('.rcard[data-retailer]', (els) => els.map((e) => [e.dataset.retailer, e.querySelector('.v-orders').textContent]));
-    assert.deepEqual(counts, [['samsclub', '6'], ['walmart', '5'], ['costco', '6']]);
+    assert.deepEqual(counts, [['amazon', '14'], ['walmart', '5'], ['costco', '6'], ['samsclub', '6']]);
     await page.screenshot({ path: path.join(shotDir, 'retailers.png'), fullPage: true });
 
     await sleep(800);

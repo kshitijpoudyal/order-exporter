@@ -48,9 +48,17 @@
     await chrome.storage.local.remove([k.orders, k.updatedAt, k.job, k.template]);
   }
 
+  // Save via a normal download link (no "downloads" permission needed).
   function download(blob, filename) {
     const url = URL.createObjectURL(blob);
-    chrome.downloads.download({ url, filename, saveAs: false }, () => setTimeout(() => URL.revokeObjectURL(url), 30000));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
   }
 
   function stamp(prefix, range) {
@@ -78,5 +86,18 @@
     return el;
   }
 
-  root.SCXUI = { iso, fmtMoney, rangeFor, savedMap, ordersFor, clearRetailer, exportXLSX, exportCSV, monogram, ready };
+  // Users must agree before the extension reads any order data (store policy: prominent
+  // disclosure + affirmative consent). The content script checks the same key.
+  const CONSENT_KEY = 'consent:v1';
+  async function hasConsent() {
+    return !!(await chrome.storage.local.get(CONSENT_KEY))[CONSENT_KEY];
+  }
+  async function giveConsent() {
+    await chrome.storage.local.set({ [CONSENT_KEY]: { at: Date.now() } });
+  }
+  async function revokeConsent() {
+    await chrome.storage.local.remove(CONSENT_KEY);
+  }
+
+  root.SCXUI = { CONSENT_KEY, hasConsent, giveConsent, revokeConsent, iso, fmtMoney, rangeFor, savedMap, ordersFor, clearRetailer, exportXLSX, exportCSV, monogram, ready };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
